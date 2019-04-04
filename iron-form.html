@@ -125,6 +125,15 @@ attach it to the `<iron-form>`:
             return {};
           }
         },
+		/**
+		 * An array containing all elments that failed validation.
+		 */
+        invalidElements: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        },
         /**
          * Set the `withCredentials` flag on the request. See
          * PolymerElements/iron-ajax for more details. Only works when
@@ -283,13 +292,18 @@ attach it to the `<iron-form>`:
         var valid = this._form.checkValidity();
         var elements = this._getValidatableElements();
 
+        this.invalidElements = new Array();
         // Go through all the elements, and validate the custom ones.
         for (var el, i = 0; el = elements[i], i < elements.length; i++) {
           // This is weird to appease the compiler. We assume the custom element
           // has a validate() method, otherwise we can't check it.
           var validatable = /** @type {{validate: (function() : boolean)}} */ (el);
           if (validatable.validate && validatable.offsetHeight > 0) {
-            valid = !!validatable.validate() && valid;
+            var elemtValid = validatable.validate();
+            if(!elemtValid) {
+              this.invalidElements.push(validatable);
+            }
+            valid = !!elemtValid && valid;
           }
         }
         return valid;
