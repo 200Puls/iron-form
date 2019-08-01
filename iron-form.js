@@ -305,7 +305,7 @@ Polymer({
       // This is weird to appease the compiler. We assume the custom element
       // has a validate() method, otherwise we can't check it.
       var validatable = /** @type {{validate: (function() : boolean)}} */ (el);
-      if (validatable.validate) {
+	  if (validatable.validate && validatable.offsetHeight > 0) {
         valid = !!validatable.validate() && valid;
       }
     }
