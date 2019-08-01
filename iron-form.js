@@ -224,6 +224,7 @@ Polymer({
   _init: function() {
     this._form.addEventListener('submit', this.submit.bind(this));
     this._form.addEventListener('reset', this.reset.bind(this));
+    this.addEventListener("dom-change", this.saveNewResetValues.bind(this));
 
     // Save the initial values.
     this._defaults = this._defaults || new WeakMap();
@@ -242,6 +243,19 @@ Polymer({
    */
   saveResetValues: function() {
     this._saveInitialValues(true);
+  },
+
+/**
+   * Saves the values of new form elements that have no reset values yet. these elements may
+   * have been added dynamically via dom-if or similiar methods. Previously saved values for other form element will
+   * NOT be overwritten.
+   *
+   * This function is useful if you are dynamically adding elements to
+   * the form, or if your elements are asynchronously setting their values.
+   * @return {void}
+   */
+  saveNewResetValues: function() {
+    this._saveInitialValues(false);
   },
 
   /**

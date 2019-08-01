@@ -235,6 +235,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <paper-input name="paper_[[index]]" id="paper_[[index]]" value="input"></paper-input>
             </template>
           </dom-repeat>
+          <dom-if id="if" >
+            <template>
+               <paper-input value="dynamic field" id="dynamic_if"> </paper-input>
+            </template>
+          </dom-if>
         </form>
       </iron-form>
     </template>
@@ -894,11 +899,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         Base.async(function() {
           document.getElementById('paper_0').value = 'input1++';
+          document.getElementById('if').if = true;
 
-          form.reset();
 
-          expect(document.getElementById('paper_0').value).to.be.equal('input');
-          done();
+          Base.async(function() {
+            document.getElementById('dynamic_if').value = 'input1++';
+            form.reset();
+            
+            expect(document.getElementById('paper_0').value).to.be.equal('input');
+            expect(document.getElementById('dynamic_if').value).to.be.equal('dynamic field');
+            done();
+          }, 0);
+
+
         }, 1);
       });
 
