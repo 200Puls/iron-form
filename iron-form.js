@@ -131,7 +131,15 @@ Polymer({
      * PolymerElements/iron-ajax for more details. Only works when
      * `allowRedirect` is false.
      */
-    withCredentials: {type: Boolean, value: false},
+	withCredentials: {type: Boolean, value: false},
+	/**
+	 * An array containing all elments that failed validation.
+	 */
+	invalidElements: {
+		type: Array,
+		value: function() {
+			return [];
+		}
   },
 
   /**
@@ -294,8 +302,9 @@ Polymer({
     }
 
     if (this._form.getAttribute('novalidate') === '')
-      return true;
-
+	  return true;
+	  
+	this.invalidElements = new Array();
     // Start by making the form check the native elements it knows about.
     var valid = this._form.checkValidity();
     var elements = this._getValidatableElements();
@@ -306,7 +315,11 @@ Polymer({
       // has a validate() method, otherwise we can't check it.
       var validatable = /** @type {{validate: (function() : boolean)}} */ (el);
 	  if (validatable.validate && validatable.offsetHeight > 0) {
-        valid = !!validatable.validate() && valid;
+		var elemtValid = validatable.validate();
+		if(!elemtValid) {
+		  this.invalidElements.push(validatable);
+		}
+		valid = !!elemtValid && valid;
       }
     }
     return valid;
